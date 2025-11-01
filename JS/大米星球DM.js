@@ -1,21 +1,20 @@
-var rule = {
-    title:'火车太堵',
-    host:'https://tdgo.shop',
-    // homeUrl:'/',
-    url:'/vodshow/fyclass--time------fypage---.html',
-    searchUrl:'/vodsearch/**----------fypage---.html',
-    searchable:2,//是否启用全局搜索,
-    quickSearch:0,//是否启用快速搜索,
-    filterable:0,//是否启用分类筛选,
-    headers:{//网站的请求头,完整支持所有的,常带ua和cookies
-        'User-Agent':'MOBILE_UA',
-        // "Cookie": "searchneed=ok"
+var rule={
+    title: '大米星球',
+    host: 'https://www.dmyy1.com',
+    url: '/vodshow/fyclass--------fypage---.html',
+    searchUrl: '/search/**----------fypage---.html',
+  //https://www.dmyy1.com/vodshow/21--------2---.html
+    //https://yxxq1.cc/search/**----------fypage---.html
+    searchable: 2,
+    quickSearch: 0,
+    filterable: 0,
+    headers: {
+    'User-Agent': 'MOBILE_UA',
     },
-    class_name:'电影&电视剧&综艺&动漫&短剧',
-    class_url:'20&21&23&22&24',
-    play_parse:true,
-    lazy:'',
-    limit:6,
+    class_parse: '.navbar&&ul&&li;a&&Text;a&&href;/(\\d+).html',
+    play_parse: false,
+    lazy: '',
+    limit: 6,
     推荐: '.module-items;a;a&&title;img&&data-original;.module-item-note&&Text;a&&href',
     double: true,
     一级: 'a.module-poster-item.module-item;a&&title;img&&data-original;.module-item-note&&Text;a&&href',

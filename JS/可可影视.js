@@ -1,7 +1,8 @@
 var rule = {
-  title: '网飞猫',
-  host: 'https://www.ncat2.com',
+  title: '可可影视',
+  host: 'https://www.keke1.app',
   // url: '/show/fyclass-----2-fypage.html',
+    //https://www.keke1.app/show/2-----2-2.html
   url: '/show/fyclass-fyfilter-fypage.html',
   filter_url:'{{fl.类型}}-{{fl.地区}}-{{fl.语言}}-{{fl.年份}}-{{fl.排序}}',
   searchUrl: '/search?k=**&page=fypage',
@@ -11,11 +12,11 @@ var rule = {
   headers: {
     'User-Agent': 'MOBILE_UA',
   },
-  class_parse: '#nav-swiper&&.nav-swiper-slide;a&&Text;a&&href;/(\\w+).html',
-  cate_exclude:'Netflix|今日更新|专题列表|排行榜',
-  tab_order:['超清', '蓝光', '极速蓝光'],
-  //class_name: '电视剧&电影&动漫&综艺&短剧',
-  //class_url: '2&1&3&4&6',
+  //class_parse: '#nav-swiper&&.nav-swiper-slide;a&&Text;a&&href;/(\\w+).html',
+  //cate_exclude:'Netflix|今日更新|专题列表|排行榜',
+  //tab_order:['超清', '蓝光', '极速蓝光'],
+  class_name: '电视剧&电影&动漫&综艺&短剧',
+  class_url: '2&1&3&4&6',
   play_parse: true,
   lazy: '',
   limit: 20,
