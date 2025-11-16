@@ -1,10 +1,10 @@
 var rule={
-    title: '映像星球',
-    host: 'https://qkys2.cc',
-    url: '/top/fyclass--------fypage---.html',
-    searchUrl: '/search/**----------fypage---.html',
-  //https://qkys2.cc/top/2-----------.html;host: 'https://yxxq1.cc',
-    //https://www.55yy7.com/vodsearch/**----------fypage---.html
+    title: '飞飞影视',
+    host: 'https://www.ffys.me',
+    url: '/vodshow/id/fyclass/page/fypage.html',
+    searchUrl: '/vodsearch**/page/fypage.html',
+  //https://www.ffys.me/vodshow/id/fyclass/page/fypage.html
+    //https://www.ffys.me/vodsearch**/page/fypage.html
     searchable: 2,
     quickSearch: 0,
     filterable: 0,

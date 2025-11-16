@@ -1,10 +1,10 @@
 var rule={
-    title: '映像星球',
-    host: 'https://qkys2.cc',
-    url: '/top/fyclass--------fypage---.html',
+    title: '皮皮影视',
+    host: 'https://www.pipishi.cc',
+    url: '/list/fyclass--------fypage---.html',
     searchUrl: '/search/**----------fypage---.html',
-  //https://qkys2.cc/top/2-----------.html;host: 'https://yxxq1.cc',
-    //https://www.55yy7.com/vodsearch/**----------fypage---.html
+    //https://www.pipishi.cc/list/fyclass--------fypage---.html
+    //https://www.pipishi.cc/search/**----------fypage---.html
     searchable: 2,
     quickSearch: 0,
     filterable: 0,

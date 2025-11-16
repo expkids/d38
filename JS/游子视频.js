@@ -1,17 +1,19 @@
 var rule={
-    title: '映像星球',
-    host: 'https://qkys2.cc',
-    url: '/top/fyclass--------fypage---.html',
-    searchUrl: '/search/**----------fypage---.html',
-  //https://qkys2.cc/top/2-----------.html;host: 'https://yxxq1.cc',
-    //https://www.55yy7.com/vodsearch/**----------fypage---.html
+    title: '游子视频',
+    host: 'https://www.youzisp.tv',
+    url: '/vodshow/fyclass--------fypage---.html',
+    searchUrl: '/vodsearch/**----------fypage---/',
+    //https://www.youzisp.tv/vodshow/dianshiju--------2---.html
+    //https://www.nivod.vip/s/**----------fypage---/
     searchable: 2,
     quickSearch: 0,
     filterable: 0,
     headers: {
     'User-Agent': 'MOBILE_UA',
     },
-    class_parse: '.navbar&&ul&&li;a&&Text;a&&href;/(\\d+).html',
+    //class_parse: '.navbar&&ul&&li;a&&Text;a&&href;/(\\d+).html',
+    class_name: '电影&电视剧&综艺&动漫&短剧',
+    class_url: 'dianying&dianshiju&zongyi&dongman&remenduanju',
     play_parse: false,
     lazy:"js:var html=JSON.parse(request(input).match(/r player_.*?=(.*?)</)[1]);var url=html.url;if(html.encrypt=='1'){url=unescape(url)}else if(html.encrypt=='2'){url=unescape(base64Decode(url))}if(/m3u8|mp4/.test(url)){input=url}else{input}",
     limit: 6,

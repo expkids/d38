@@ -1,9 +1,9 @@
 var rule={
-    title: '映像星球',
-    host: 'https://qkys2.cc',
-    url: '/top/fyclass--------fypage---.html',
-    searchUrl: '/search/**----------fypage---.html',
-  //https://qkys2.cc/top/2-----------.html;host: 'https://yxxq1.cc',
+    title: '555影视',
+    host: 'https://www.55yy7.com',
+    url: '/vodshow/fyclass--------fypage---.html',
+    searchUrl: '/vodsearch/**----------fypage---.html',
+  //https://www.55yy7.com/vodshow/fyclass--------fypage---.html
     //https://www.55yy7.com/vodsearch/**----------fypage---.html
     searchable: 2,
     quickSearch: 0,

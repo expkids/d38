@@ -1,5 +1,5 @@
 var rule = {
-    title:'BP影视',
+    title:'白票影视',
     host:'https://www.6699z.cn',
     // https://www.6699z.cn/index.php/vod/show/id/fyclass/page/fypage.html
 	//https://www.6699z.cn/index.php/vod/search/page/fypage/wd/**.html

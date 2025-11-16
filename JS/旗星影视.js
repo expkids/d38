@@ -1,10 +1,10 @@
 var rule={
-    title: '映像星球',
-    host: 'https://qkys2.cc',
-    url: '/top/fyclass--------fypage---.html',
-    searchUrl: '/search/**----------fypage---.html',
-  //https://qkys2.cc/top/2-----------.html;host: 'https://yxxq1.cc',
-    //https://www.55yy7.com/vodsearch/**----------fypage---.html
+    title: '旗星影视',
+    host: 'https://qxys.nbcys.eu.org',
+    url: '/vds/fyclass--------fypage---.html',
+    //https://qxys.nbcys.eu.org/vds/1--------2---.html
+    //https://qxys.nbcys.eu.org/vdh/**-/page/fypage.html
+    searchUrl: '/vdh/**-/page/fypage.html',
     searchable: 2,
     quickSearch: 0,
     filterable: 0,
@@ -26,3 +26,5 @@ var rule={
     "tabs": ".hisSwiper&&span",
     "lists": ".his-tab-list:eq(#id) a"},
     搜索: 'body .module-item;.module-card-item-title&&Text;.lazyload&&data-original;.module-item-note&&Text;a&&href;.module-info-item-content&&Text',}
+
+
