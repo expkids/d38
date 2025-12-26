@@ -1,87 +1,136 @@
 var rule = {
-  title: '可可影视',
-  host: 'https://www.keke1.app',
-  // url: '/show/fyclass-----2-fypage.html',
-    //https://www.keke1.app/show/2-----2-2.html
-  url: '/show/fyclass-fyfilter-fypage.html',
-  filter_url:'{{fl.类型}}-{{fl.地区}}-{{fl.语言}}-{{fl.年份}}-{{fl.排序}}',
-  searchUrl: '/search?k=**&page=fypage',
-  searchable: 2,
-  quickSearch: 0,
-  filterable: 1,
-  headers: {
-    'User-Agent': 'MOBILE_UA',
-  },
-  //class_parse: '#nav-swiper&&.nav-swiper-slide;a&&Text;a&&href;/(\\w+).html',
-  //cate_exclude:'Netflix|今日更新|专题列表|排行榜',
-  //tab_order:['超清', '蓝光', '极速蓝光'],
-  class_name: '电视剧&电影&动漫&综艺&短剧',
-  class_url: '2&1&3&4&6',
-  play_parse: true,
-  lazy: '',
-  limit: 20,
-  推荐: '.section-box:eq(2)&&.module-box-inner&&.module-item;*;*;*;*',
-  double: false,
-  一级: '.module-box-inner&&.module-item;.v-item-title:eq(1)&&Text;img:eq(1)&&data-original;.v-item-bottom&&span&&Text;a&&href',
-  二级: {
-    title: '.detail-title&&Text;.detail-tags&&a:eq(-2)&&Text',
-    img: '.detail-pic&&img&&data-original',
-    desc: '.detail-info-row-main:eq(-2)&&Text;.detail-tags&&a&&Text;.detail-tags&&a:eq(1)&&Text;.detail-info-row-main:eq(1)&&Text;.detail-info-row-main&&Text',
-    content: '.detail-desc&&Text',
-    tabs: '.source-item-label',
-    lists: '.episode-list:eq(#id) a',
-  },
-  搜索: '.search-result-list&&a;.title&&Text;*;.search-result-item-header&&Text;a&&href;.desc&&Text',
-  图片替换:'https://www.ncat2.com=>https://vres.a357899.cn',
-  filter:'H4sIAAAAAAAAA+2Zz08bRxTH/xefOdgGtTi3HlqpUpVLe6hURREHV4qa0kN/qFWEZLANxhBsEDFx7AIpGEyCf0CQY9bY/md2Ztf/RWf95r0ZR+3LtqGRqviC+LzvzOzs7Nt531k/isQid755FPku+VvkTsS76In9jchMZHHh+6TNvyw8/Dk5briowiJbH6XrQVhBZGkGoneTP3378MGvOnz3068+++Lzr0kV66cyndWiBtJKVRVBDYC0fN3tV1EDQM3LXZgxNaAml4syVdKaBtLSebnyDDUAGjPf8vovcEwA0k63xXUPNQAac+XcK23jmAB0D7U1008Daas7o/IZagA0Zu6p66zjmADUb2tVFC6xHwBphWP/iNYagLRmRzgN1ABQc28O/WZbaxpoLo0Td3CIcwEw2qaf2ydtDLRmBw1vfQ3XDMB6tt5uzzzbAEjLDL2XNdQAUPOXN0XV0ZqGpXuBCmksqm2x6Zg0Jg6TxuL4dFRexUXoNkSlr0PYYnRSlt3WRAsdMg+gLa8Hk2NAiJZlsKWCuCwAtJx7NVk9x+UEoGsfnJl+GmhZNi6MpoHGfPXEaBpotoPXRtNA2uO2cE5QAzBjtu0x23Y/t3s9on4a6N6390W2i/cOQNd7feXXhng9AJMuh3JjqB4GZQwyXXWY8fp7skQPh5jmnCmoDiKHb5xhatHaVSj3OtiC2Np2RHtXZPFNMUxPojb0CirVy/gwiOkqg1dwXdehjcgO0T1nO24PtzENdqr7rYZfT5lUJw6V6pW+ao+DA9BNXh4bTYOVaEbTYCWv0TRYyWs0DVaCWv0Awi6CuL5ye33rfUcOswjxaHxOx8b/WvFZE5+143ETj9vxmInH7HjUxKMUj0XH0zwiLRa9r/4kqEH0zQbRoEHUNEhMNoglEtH76o9pMP9mg/mgwbxpICtXcg9fhUD7ODGxsHJrRzgFs7DEkwvr9W5EMYdXMaNXU7KEL0ncDntpfNJmXf1WRuRw350LpnFvRvX6b8yJpjDmhDMZnHHhjARrFrjizZghrrBzhoczJ0FhovvTEMYMceaEMzVBQaPraQhjQNSWZ56RhjBGkDNfo3RfdFdwLgC3bUAoHLllA8LZhH9rPTgLwVkP1l681ShxJoMzJ9PCOS2cH3DhnH1PhTNfl6llefNy4hxnQqFO/9wpkPsywGzebKHkCh5X1JgTqSzue+dU0AFCGQimaHMnZ5UH/vMUagCkVfKyjFVFQxjj4fUK1rEMgPodPhcV2mQAUPtk8YFKK5Dgf8rMYVGtPW53AHRUcy5Fo4g7PwBtd7/vyKe40hpMOd9Qa0jlfAxhLMJfWqDb+mbAlc23l/N3+1rwbmZg+s1g+s1gan1snlqf/7n1mbst6+M5L0T/CaYzAGnVA9dxvFOqwcQ0t2bb9NZAWuZCFI5Mb8OhDBP36Z8xTNznfa/SFUe0OQHQbPMrXqWJUwUwJffvP/1zBo2zBl8mF378YVFrGmie3M8zjGHiDJosP3NvaEcFmP6cMC0j0zLyIZeRj/55GTFh+ymPUqv+H5R6AJTqu1XRxBOLBppVuajON5jqANTvbOh38tgPgK639tjbPcDrAYQpK+yv28zJij3fMudw9tdt7myf7Yhm2rySAbz3zFEpsvQnK+G0IDwhAAA=',
-  一级f:`js:
-    let urls = [
-    ''https://www.ncat2.com/show/1-----1-1.html',
-    'https://www.ncat2.com/show/2-----1-1.html',
-    'https://www.ncat2.com/show/3-----1-1.html',
-    'https://www.ncat2.com/show/4-----1-1.html',
-    'https://www.ncat2.com/show/6-----1-1.html',
-    ];
-    let filters = {};
-    pdfa = jsp.pdfa;
-    pdfh = jsp.pdfh;
-    for(let url of urls){
-    let fclass = url.match(/show\\/(\\d+)-/)[1];
-    console.log(fclass);
-    let html = request(url);
-    let tabs = pdfa(html, '.filter-row');
-    let data = [];
-    for (let tab of tabs) {
-        let title = pdfh(tab, 'strong&&Text').replace(':','');
-        let lis = pdfa(tab, 'a');
-        let _map = {key: title, name: title};
-        let value = [];
-        for (let li of lis) {
-            let n = pdfh(li, 'a&&Text').trim();
-            let v=n;
-            if(/全部|地区|类型/.test(n)){
-                v = '';
-            }else if(/综合/.test(n)){
-                v = '1';
-            }else{
-                v = pdfh(li,'a&&href');
-                try {
-                    v = v.match(/-(.*?)1-1\.html/)[1].replace(/-/g,'');
-                }catch (e) {
-                    v = v.match(/-(.*?)-1\.html/)[1].replace(/-/g,'');
-                }
-                v = decodeURIComponent(v);
+    //定义获取图片地址域名变量
+    img_host: '',
+
+    author: '小可乐/2509/第二版',
+    title: '可可影视',
+    类型: '影视',
+    host: 'https://www.kkys01.com',
+    hostJs: '',
+    headers: {'User-Agent': 'MOBILE_UA'},
+    编码: 'utf-8',
+    timeout: 5000,
+
+    homeUrl: '/',
+    url: '/show/fyclass-fyfilter-fypage.html',
+    filter_url: '{{fl.class}}-{{fl.area}}-{{fl.lang}}-{{fl.year}}-{{fl.by}}',
+    searchUrl: '/search?k=**&page=fypage&t=',
+    detailUrl: '',
+
+    limit: 9,
+    double: false,
+    class_name: '电影&剧集&综艺&动漫&短剧',
+    class_url: '1&2&4&3&6',
+
+    预处理: $js.toString(() => {
+        const sha1ToUint8ArrayLatin1 = str => {
+            if (typeof str !== 'string') {
+                return null;
             }
-            value.push({
-                'n': n, 'v': v
-            });
+            try {
+                let latin1Str = CryptoJS.SHA1(str).toString(CryptoJS.enc.Latin1);
+                let u8Array = Uint8Array.from(latin1Str, char => char.charCodeAt(0));
+                return u8Array;
+            } catch (e) {
+                return null;
+            }
         }
-        _map['value'] = value;
-        data.push(_map);
-    }
-    filters[fclass] = data;
-    }
-    VODS = [filters];
-    console.log(gzip(JSON.stringify(filters)));
-    `,
+        let hashPre = request(HOST)?.match(/a0_0x2a54\s*=\s*\['([^']+)'/)?.[1]?.trim() ?? '';
+        if (hashPre != '' && hashPre != getItem('hashpre')) {
+            setItem('tgcookie', '');
+            setItem('hashpre', '');
+            let hashIdx = parseInt('0x' + hashPre[0], 16);
+            if (Number.isInteger(hashIdx) && hashIdx >= 0 && hashIdx <= 18) {
+                let cookieFound = false;
+                let maxLoop = 100000;
+                for (let i = 0; i < maxLoop && !cookieFound; i++) {
+                    let hashInput = `${hashPre}${i}`;
+                    let sha1Arr = sha1ToUint8ArrayLatin1(hashInput);
+                    if (sha1Arr && sha1Arr[hashIdx] === 0xb0 && sha1Arr[hashIdx + 1] === 0x0b) {
+                        let defendCookie = `cdndefend_js_cookie=${hashInput}`;
+                        setItem('hashpre', hashPre);
+                        setItem('tgcookie', defendCookie);
+                        cookieFound = true;
+                    }
+                }
+            }
+        }
+        if (getItem('tgcookie')) {
+            rule_fetch_params.headers['cookie'] = getItem('tgcookie');
+        }
+        let khtml = fetch(HOST, {
+            headers: rule_fetch_params.headers
+        });
+        let tValue = khtml.match(/<input[^>]*name="t"[^>]*value="([^"]*)"/i);
+        if (tValue && tValue[1]) {
+            rule.searchUrl = rule.searchUrl + encodeURIComponent(tValue[1]);
+        }
+        let scripts = pdfa(khtml, 'script');
+        let img_script = scripts.find((it) => pdfh(it, 'script&&src').includes('rdul.js'));
+        if (img_script) {
+            let img_url = img_script.match(/src="(.*?)"/)[1];
+            let img_html = fetch(img_url);
+            rule.img_host = img_html.match(/'(.*?)'/)[1];
+            rule.图片替换 = HOST + '=>' + rule.img_host;
+        }
+    }),
+
+    推荐: '*',
+    一级: '.module-item;.v-item-title:eq(1)&&Text;img:eq(-1)&&data-original;span:eq(-1)&&Text;a&&href',
+    搜索: $js.toString(() => {
+        let t = pdfh(fetch(input), 'input:eq(0)&&value');
+        input = input.split('?')[0];
+        let surl = `${input}?k=${KEY}&page=${MY_PAGE}&t=${t}`;
+        let khtml = fetch(surl);
+        VODS = [];
+        let klists = pdfa(khtml, '.search-result-item');
+        klists.forEach((it) => {
+            VODS.push({
+                vod_name: pdfh(it, 'img&&alt'),
+                vod_pic: pd(it, 'img&&data-original', rule.img_host),
+                vod_remarks: pdfh(it, '.search-result-item-header&&Text'),
+                vod_id: pdfh(it, 'a&&href')
+            });
+        });
+    }),
+    二级: {
+        title: '.detail-title&&strong:eq(1)&&Text;.detail-tags&&Text',
+        img: '.detail-pic&&img&&data-original',
+        desc: '.detail-info-row-main:eq(-2)&&Text;.detail-tags-item:eq(0)&&Text;.detail-tags-item:eq(1)&&Text;.detail-info-row-main:eq(1)&&Text;.detail-info-row-main:eq(0)&&Text',
+        content: '.detail-desc&&Text',
+        tabs: '.source-item',
+        tab_text: 'span:eq(-1)&&Text',
+        lists: '.episode-list:eq(#id)&&a',
+        list_text: 'body&&Text',
+        list_url: 'a&&href',
+    },
+
+    tab_remove: ['4K(高峰不卡)'],
+    play_parse: true,
+    lazy: $js.toString(() => {
+        let kurl = input;
+        let khtml = request(kurl);
+        if (/dujia/.test(khtml)) {
+            kurl = khtml.split("PPPP = '")[1].split("';")[0];
+            const key = CryptoJS.enc.Utf8.parse('Isu7fOAvI6!&IKpAbVdhf&^F');
+            const dataObj = {
+                ciphertext: CryptoJS.enc.Base64.parse(kurl)
+            };
+            const decrypted = CryptoJS.AES.decrypt(dataObj, key, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            kurl = decrypted.toString(CryptoJS.enc.Utf8);
+        } else {
+            kurl = khtml.split('src: "')[1].split('",')[0];
+        }
+        input = {
+            jx: 0,
+            parse: 0,
+            url: kurl,
+            header: rule.headers
+        };
+    }),
+
+    filter: 'H4sIAAAAAAAAA+2Z308bRxDH3/1XVH7mwQba4rz1oZUqVXlpHypFUeRWbhWVulJoqyKEZLANxhBskGPi2AVSMJgE/4Agx5yx/c/c3p3/i66ZndlzUk1OCYmU6l4Qn/nur9ud3ZldLwSC4eCtT+4EFoK/xOaDt4I/zkbn5oITwXj015hE+6wrdtcl/xmd/UMa7iwE49Is0rVhsjYySwguToD1duz3n2bv/6XMt7/87qtvvv6eVLF2bCXTSlRAWrEiLagBkJatmb0KagCo2Zkz3aYC1KylvJUoKk0BacmstfwENQBqM9u0e8+wTQDSjrfEZRc1AGpz+dQubmGbAPQN1VVdTwFpK9vD0glqANRm5rFprGGbAFRvc0XkzrEeAGm5Q+eA5hqAtEZbGHXUAFAzr/adRktpCmgs9SOzv49jAdDahpPZJe0aaM726vbaKs4ZgGtt7UJXr+0ISEsN7OdV1ABQc5Y2RMVQmoLFu4sT5MbRB7Go9mJRaYkNw6MXi8PjYWkF56BTF+WeMmGJ4VHJ6jTHSiiTnv+WddkfbwNMNCv9TWnEWQGg2dypWpVTnE0A6nvvRNdTQLOyfqY1BdTmi0daU0Cj7b/UmgLSHraEcYQagG6z5W6z5a5ndi6HVE8BffvWrkh38NsBqL+XF051gP0BaG/Zt9YHcjHIYZCp10HK7u1YRVocYhpzKicriAxuOM1UolmQaO20sQSx69QRrYJI40bRTCtRHdg56eklXAxi6qX/Avo1DTqH3Cb65nTb7OIppmDM02ej8Z+1pzvNulNLePX0ck+Wx7YB6BvPD7WmwOVnWlPg8l2tKXD5rtYUuPzTVQ/A8xzMx6IPXLv98sLs9jzOwWRo8lNlu/7XZZ/W9mm3fUrbp9z2SW2fdNvD2h5220PaHiJ7OHQ9/APSwqF78k+ECoReLRAaFQjpApHxAuFIJHRP/tEFZl4tMDMqMKMLWOULawc3yEj7PDI+3z/M69m2NreFkXtttu3ulchnsAvddCVhFXHfTLrNdhJXX0+q00yJDB7F06MxBO5OBGS995SxKPKSsXCZB5fNcNkFm0FwEZ3JkLhoz2VBXMYyClf0fQq8ZEhcxsJlOqMwR/0p8JKVyJNQr5ECL9khl5ENkz3RWcaxANxwVkLm4A1nJVzu8Lb5CJdXcPkIm3O8MXviMg8uY/GjqR9N/Wg6Hk2nbyya2sYz0XuEXg5AWmXPNAz7OIEyMQ2v0dK1FZCWOhO5A11bs6fXBe6mzMRq7jZslzvigC4AADTa7LJdbuBQAbzclLm44wzyMrJjmwCofRuLzv0WV5oCT68ZzM3cyu/ap5SLAJBWemJeUd4A4N++/djixxY/tozHlqkPdVPL1qzEknX1fOw1UZs8RQnuLZJ7n2ZObfZmxt2wuFsU8y7KndrsjZW5JXJRQrqC85RCOoCOkFmrhPcYBV5uunY353odBKB6+09Fmc4eANS+iN+XbgUS/O8ldprGuajnMVYA0Cn497b1GGdagb4/rss5xJEAeLmT/ued+4ZiJxe53hxX3y1qvtvt03+59l+u/XzIz4f+7/nQZ2+RD2mze/WHiRXnH/JIANoBhYpoYPxRQAMr5WW0wh0AQPVOBk47i/UAqL/Vh3ZhD/sD8JJVsb+YM3GSzVaYrIr9xZzL1NJt0UjqnTqCj3anflCPH7l2YPFflpCCHEkiAAA='
 }
