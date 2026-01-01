@@ -245,7 +245,7 @@
         }
       }
     },
-
+{"key": "小苹果py","name": "🍎┃小苹果┃PY","type": 3,"api": "./Py/小苹果.py","searchable": 1,"quickSearch": 0,"filterable": 0,"changeable": 0},
 	//GM结束
 {"key":"py_爱盈_APP","name":" 💖爱盈(QIJI)","type":3,"api":"./Py/app/qijiapp.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"https://aysappto.oss-cn-chengdu.aliyuncs.com/qj3.txt","api":"/api.php/qijiappapi","datakey":"sda1231sasddad21","dataiv":"sda1231sasddad21"}},
 {"key":"py_顾我_APP","name":" 🛡️顾我(QIJI)","type":3,"api":"./Py/app/qijiapp.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"https://guwozj-1319364746.cos.ap-guangzhou.myqcloud.com/guwo.txt","api":"/api.php/qijiappapi","datakey":"ca94b06ca3c7d80e","dataiv":"ca94b06ca3c7d80e"}},
@@ -262,13 +262,19 @@
 {"key":"py_木瓜_APP","name":"木瓜(FOX)","type":3,"api":"./Py/app/appfox.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"http://www.yezitv.top"}},
 {"key":"py_恋鱼_APP","name":"恋鱼(FOX)","type":3,"api":"./Py/app/appfox.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"https://173220859-1333208043.cos.ap-shanghai.myqcloud.com/1.json","ver":"2"}},
 {"key":"py_麒麟_APP","name":"麒麟(FOX)","type":3,"api":"./Py/app/appfox.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"https://www.70yyw.cc","ver":"2"}},
+	{"key":"py_肥猫_APP","name":" 🌺肥猫(GET)","type":3,"api":"./Py/app/getapp.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"http://103.236.61.192:8006","api":"/api.php/getappapi","datakey":"123456789abcdefg","dataiv":"123456789abcdefg"}},
+    {"key":"py_行动_APP","name":" 🌺行动(GET)","type":3,"api":"./Py/app/getapp.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"https://zjm-1302383509.cos.ap-guangzhou.myqcloud.com/zjm.txt","api":"/api.php/getappapi","datakey":"zjmznbl2026zcxgb","dataiv":"zjmznbl2026zcxgb"}},
+	{"key":"py_再来_APP","name":" 🌺再来(GET)","type":3,"api":"./Py/app/getapp.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"https://www.jumengwu.com","api":"/api.php/getappapi","datakey":"1f0a873caf2550a5","dataiv":"1f0a873caf2550a5"}},
+    {"key":"py_黑猫_APP","name":" 🌺黑猫(GET)","type":3,"api":"./Py/app/getapp.py","searchable":1,"quickSearch":1,"filterable":1,"ext":{"host":"http://app1-0-0.87333.cc","api":"/api.php/getappapi","datakey":"VwsHxkCViDXEExWa","dataiv":"VwsHxkCViDXEExWa"}},
 	
 	//APP 结束
-	
+{"key": "apple","name": "Apple┃影视","type": 3,"api": "./JS/apple.js","style": {"type": "rect","ratio": 1.33},"changeable": 1},	
 {"key": "恋鱼影视","name": "🌹恋鱼┃APP","type": 3,"changeable": 0, "jar": "https://github.com/heroaku/TB/raw/refs/heads/main/VOX/jar/vox.jar","api": "csp_Appfox","ext": {"host": "https://173220859-1333208043.cos.ap-shanghai.myqcloud.com/1.json","ver": 2}},
 {"key": "麒麟影院","name": "🐩麒麟┃APP","type": 3,"changeable": 0, "jar": "https://github.com/heroaku/TB/raw/refs/heads/main/VOX/jar/vox.jar","api": "csp_Appfox","ext": {"host": "https://www.70yyw.cc","ver": 2}},	
 {"key": "Max","name": "❤️下饭┃Max","type": 3,"changeable": 0,"searchable": 1,"quickSearch": 1, "jar": "https://github.com/heroaku/TB/raw/refs/heads/main/VOX/jar/vox.jar","api": "csp_AppYsV2","ext": {"api": "http://yjyi.juyongjiu.com:80/icciu_api.php/v1.vod","datasignkey": "6QQNUsP3PkD2ajJCPCY8","apisignkey": "lvdoutv-1.0.0"}},
 {"key": "剧永久","name": "🎽剧集┃永久","type": 3,"changeable": 0, "jar": "https://github.com/heroaku/TB/raw/refs/heads/main/VOX/jar/vox.jar","api": "csp_AppYsV2","ext": {"api": "http://yjer.jumianfei.com/icciu_api.php/v1.vod","apisignkey": "lvdoutv-1.0.0"}},
+{"key": "金牌","name": "金牌丨APP","type": 3,"searchable": 1,"changeable": 1, "jar": "./tvkj.jar","api": "csp_AppQi","ext": {"site": "https://dtqj1.gg1080.com:443/dtjp.txt","dataKey": "kecbio48dsq131ed","dataIv": "kecbio48dsq131ed"}},
+{"key": "驿站","name": "驿站丨APP","type": 3,"quickSearch": 1, "jar": "./tvkj.jar","api": "csp_AppGet","ext": {"site": "https://dyyztvappapigoodgx.68.gy:12689/ciwk28vu38io8/apiurl.txt","dataKey": "dyyztvapiappyyds","dataIv": "dyyztvapiappyyds"}},
 	
 {"key":"csp_Gz360","name":"🍉瓜子","type":3,"api":"csp_Gz360","searchable":1,"quickSearch":1,"filterable":1},
 {"key":"天天","name":"⛅天天","type":3,"api":"csp_TTian","searchable":1,"quickSearch":1,"filterable":1,"ext":"7lj763gg0939791h1l3888jig44gi291li"},

@@ -1,136 +1,287 @@
+/*
+@header({
+  searchable: 2,
+  filterable: 1,
+  quickSearch: 0,
+  title: 'PTT追剧大师',
+  '类型': '影视',
+  lang: 'ds'
+})
+*/
+
 var rule = {
-    //定义获取图片地址域名变量
-    img_host: '',
-
-    author: '小可乐/2509/第二版',
-    title: '可可影视',
     类型: '影视',
-    host: 'https://www.hhkan1.com',
-    hostJs: '',
-    headers: {'User-Agent': 'MOBILE_UA'},
-    编码: 'utf-8',
-    timeout: 5000,
-
+    title: 'PTT追剧大师',
+    host: 'https://ptt.red',
     homeUrl: '/',
-    url: '/show/fyclass-fyfilter-fypage.html',
-    filter_url: '{{fl.class}}-{{fl.area}}-{{fl.lang}}-{{fl.year}}-{{fl.by}}',
-    searchUrl: '/search?k=**&page=fypage&t=',
-    detailUrl: '',
-
-    limit: 9,
-    double: false,
-    class_name: '电影&剧集&综艺&动漫&短剧',
-    class_url: '1&2&4&3&6',
-
-    预处理: $js.toString(() => {
-        const sha1ToUint8ArrayLatin1 = str => {
-            if (typeof str !== 'string') {
-                return null;
+    url: '/p/fyclass?page=fypage',
+    searchUrl: '/q/**?page=fypage',
+    searchable: 2,
+    quickSearch: 0,
+    filterable: 1,
+    filter: '',
+    filter_url: '',
+    filter_def: {},
+    headers: {
+        'User-Agent': 'MOBILE_UA',
+        'Accept-Language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7'
+    },
+    timeout: 5000,
+    class_parse: '.nav-tabs&&a;a&&Text;a&&href;(\\d+)',
+    cate_exclude: '',
+    play_parse: true,
+    
+    lazy: $js.toString(() => {
+        try {
+            let html = request(input);
+            
+            // 1. 直接从JSON-LD中提取contentUrl
+            let match = html.match(/"contentUrl":"([^"]+)"/);
+            if (match && match[1]) {
+                let playUrl = match[1].replace(/\\/g, '');
+                console.log('从JSON-LD提取到播放地址:', playUrl);
+                return {parse: 0, url: playUrl, js: ''};
             }
-            try {
-                let latin1Str = CryptoJS.SHA1(str).toString(CryptoJS.enc.Latin1);
-                let u8Array = Uint8Array.from(latin1Str, char => char.charCodeAt(0));
-                return u8Array;
-            } catch (e) {
-                return null;
+            
+            // 2. 如果没有JSON-LD，检查是否是剧集选择页面
+            if (input.includes('/v/')) {
+                return {parse: 0, url: '', js: '// 请选择具体剧集'};
             }
+            
+            // 3. 如果是剧集播放页面但没有找到地址
+            if (input.match(/\/\d+\/\d+\/\d+$/)) {
+                console.log('剧集播放页面，但未找到播放地址:', input);
+                return {parse: 0, url: input, js: 'setTimeout(() => location.reload(), 1000)'};
+            }
+            
+            return {parse: 0, url: input, js: ''};
+            
+        } catch(error) {
+            console.log('lazy解析错误:', error);
+            return {parse: 0, url: input, js: ''};
         }
-        let hashPre = request(HOST)?.match(/a0_0x2a54\s*=\s*\['([^']+)'/)?.[1]?.trim() ?? '';
-        if (hashPre != '' && hashPre != getItem('hashpre')) {
-            setItem('tgcookie', '');
-            setItem('hashpre', '');
-            let hashIdx = parseInt('0x' + hashPre[0], 16);
-            if (Number.isInteger(hashIdx) && hashIdx >= 0 && hashIdx <= 18) {
-                let cookieFound = false;
-                let maxLoop = 100000;
-                for (let i = 0; i < maxLoop && !cookieFound; i++) {
-                    let hashInput = `${hashPre}${i}`;
-                    let sha1Arr = sha1ToUint8ArrayLatin1(hashInput);
-                    if (sha1Arr && sha1Arr[hashIdx] === 0xb0 && sha1Arr[hashIdx + 1] === 0x0b) {
-                        let defendCookie = `cdndefend_js_cookie=${hashInput}`;
-                        setItem('hashpre', hashPre);
-                        setItem('tgcookie', defendCookie);
-                        cookieFound = true;
+    }),
+    
+    double: false,
+    推荐: '*',
+    
+    // 一级解析：提取影视列表
+    一级: '.embed-responsive:has(a[href*="/v/"]);a:eq(-1)&&Text;img&&src;.badge-success&&Text;a[href*="/v/"]&&href',
+    
+    二级: $js.toString(() => {
+        try {
+            let VOD = {};
+            let html = request(input);
+            
+            // 提取影片ID
+            let vodId = '';
+            if (input.includes('/v/')) {
+                vodId = input.split('/v/')[1];
+            } else if (input.includes('/')) {
+                let parts = input.split('/');
+                vodId = parts[parts.length - 1];
+            }
+            
+            // 提取标题
+            VOD.vod_name = pdfh(html, 'h3.py-1&&Text') || 
+                          pdfh(html, '.breadcrumb-item:last-child&&Text') ||
+                          pdfh(html, 'title&&Text');
+            
+            // 提取封面
+            let pic = pdfh(html, '.row.mb-3 img&&src') || 
+                     pdfh(html, '.card-img-top&&src') ||
+                     pdfh(html, 'img.img-fluid&&src');
+            if (pic && !pic.startsWith('http')) {
+                pic = 'https://ptt.red' + pic;
+            }
+            VOD.vod_pic = pic;
+            
+            // 提取基本信息
+            let infoRows = pdfa(html, '.table-about tbody tr');
+            infoRows.forEach(row => {
+                let label = pdfh(row, 'th&&Text').trim();
+                let value = pdfh(row, 'td&&Text').trim();
+                
+                if (label.includes('狀態') || label.includes('状态')) VOD.vod_remarks = value;
+                else if (label.includes('類別') || label.includes('类别')) VOD.type_name = value;
+                else if (label.includes('導演') || label.includes('导演')) VOD.vod_director = value;
+                else if (label.includes('國家') || label.includes('国家')) VOD.vod_area = value;
+                else if (label.includes('語言') || label.includes('语言')) VOD.vod_lang = value;
+                else if (label.includes('年代') || label.includes('年份')) VOD.vod_year = value;
+            });
+            
+            // 提取剧情介绍
+            VOD.vod_content = pdfh(html, 'h3:contains(劇情介紹)+p&&Text') || 
+                             pdfh(html, 'h3:contains(剧情介绍)+p&&Text') ||
+                             '';
+            
+            // 提取演员
+            let actors = [];
+            let actorElements = pdfa(html, 'h3:contains(領銜主演)+*+a, h3:contains(领衔主演)+*+a');
+            actorElements.forEach(actor => {
+                actors.push(pdfh(actor, '&&Text'));
+            });
+            if (actors.length > 0) {
+                VOD.vod_actor = actors.join(',');
+            }
+            
+            // ====== 关键部分：播放源和剧集解析 ======
+            
+            // 1. 提取播放源（琪雲、蓉雲、埔雲等）
+            let sources = {};
+            
+            // 方式1：从导航标签提取
+            let navSources = pdfa(html, '.nav-tabs .nav-link');
+            navSources.forEach(source => {
+                let href = pd(source, '&&href', input);
+                let name = pdfh(source, '&&Text');
+                if (href && name) {
+                    let parts = href.split('/');
+                    if (parts.length >= 4) {
+                        let sourceId = parts[3];
+                        sources[sourceId] = name;
                     }
                 }
+            });
+            
+            // 方式2：从ul#w1提取（备选方案）
+            if (Object.keys(sources).length === 0) {
+                let ulSources = pdfa(html, 'ul#w1 li a');
+                ulSources.forEach(source => {
+                    let href = pd(source, '&&href', input);
+                    let name = pdfh(source, '&&Text') || pdfh(source, '&&title');
+                    if (href && name) {
+                        let parts = href.split('/');
+                        if (parts.length >= 4) {
+                            let sourceId = parts[3];
+                            sources[sourceId] = name;
+                        }
+                    }
+                });
             }
-        }
-        if (getItem('tgcookie')) {
-            rule_fetch_params.headers['cookie'] = getItem('tgcookie');
-        }
-        let khtml = fetch(HOST, {
-            headers: rule_fetch_params.headers
-        });
-        let tValue = khtml.match(/<input[^>]*name="t"[^>]*value="([^"]*)"/i);
-        if (tValue && tValue[1]) {
-            rule.searchUrl = rule.searchUrl + encodeURIComponent(tValue[1]);
-        }
-        let scripts = pdfa(khtml, 'script');
-        let img_script = scripts.find((it) => pdfh(it, 'script&&src').includes('rdul.js'));
-        if (img_script) {
-            let img_url = img_script.match(/src="(.*?)"/)[1];
-            let img_html = fetch(img_url);
-            rule.img_host = img_html.match(/'(.*?)'/)[1];
-            rule.图片替换 = HOST + '=>' + rule.img_host;
-        }
-    }),
-
-    推荐: '*',
-    一级: '.module-item;.v-item-title:eq(1)&&Text;img:eq(-1)&&data-original;span:eq(-1)&&Text;a&&href',
-    搜索: $js.toString(() => {
-        let t = pdfh(fetch(input), 'input:eq(0)&&value');
-        input = input.split('?')[0];
-        let surl = `${input}?k=${KEY}&page=${MY_PAGE}&t=${t}`;
-        let khtml = fetch(surl);
-        VODS = [];
-        let klists = pdfa(khtml, '.search-result-item');
-        klists.forEach((it) => {
-            VODS.push({
-                vod_name: pdfh(it, 'img&&alt'),
-                vod_pic: pd(it, 'img&&data-original', rule.img_host),
-                vod_remarks: pdfh(it, '.search-result-item-header&&Text'),
-                vod_id: pdfh(it, 'a&&href')
+            
+            // 如果没有找到播放源，设置默认
+            if (Object.keys(sources).length === 0) {
+                sources = {
+                    '94': '琪雲',
+                    '49': '蓉雲',
+                    '57': '埔雲'
+                };
+            }
+            
+            // 2. 提取剧集列表
+            let episodes = [];
+            
+            // 方式1：从.seqs提取
+            let seqElements = pdfa(html, '.seqs a, a.seq.border, a.seq');
+            seqElements.forEach(seq => {
+                let href = pd(seq, '&&href', input);
+                let name = pdfh(seq, '&&Text');
+                if (href && name) {
+                    let parts = href.split('/');
+                    if (parts.length >= 3) {
+                        let epNum = parts[2];
+                        episodes.push({num: epNum, name: name});
+                    }
+                }
             });
-        });
-    }),
-    二级: {
-        title: '.detail-title&&strong:eq(1)&&Text;.detail-tags&&Text',
-        img: '.detail-pic&&img&&data-original',
-        desc: '.detail-info-row-main:eq(-2)&&Text;.detail-tags-item:eq(0)&&Text;.detail-tags-item:eq(1)&&Text;.detail-info-row-main:eq(1)&&Text;.detail-info-row-main:eq(0)&&Text',
-        content: '.detail-desc&&Text',
-        tabs: '.source-item',
-        tab_text: 'span:eq(-1)&&Text',
-        lists: '.episode-list:eq(#id)&&a',
-        list_text: 'body&&Text',
-        list_url: 'a&&href',
-    },
-
-    tab_remove: ['4K(高峰不卡)'],
-    play_parse: true,
-    lazy: $js.toString(() => {
-        let kurl = input;
-        let khtml = request(kurl);
-        if (/dujia/.test(khtml)) {
-            kurl = khtml.split("PPPP = '")[1].split("';")[0];
-            const key = CryptoJS.enc.Utf8.parse('Isu7fOAvI6!&IKpAbVdhf&^F');
-            const dataObj = {
-                ciphertext: CryptoJS.enc.Base64.parse(kurl)
+            
+            // 方式2：如果没有剧集，可能是电影
+            if (episodes.length === 0) {
+                episodes.push({num: '1', name: '播放'});
+            }
+            
+            // 3. 构建播放列表
+            let playFrom = [];
+            let playUrl = [];
+            
+            for (let sourceId in sources) {
+                let sourceName = sources[sourceId];
+                let episodeList = [];
+                
+                episodes.forEach(ep => {
+                    // 构建播放URL：vodId/epNum/sourceId
+                    let playItem = ep.name + '$' + vodId + '/' + ep.num + '/' + sourceId;
+                    episodeList.push(playItem);
+                });
+                
+                playFrom.push(sourceName);
+                playUrl.push(episodeList.join('#'));
+            }
+            
+            VOD.vod_play_from = playFrom.join('$$$');
+            VOD.vod_play_url = playUrl.join('$$$');
+            
+            console.log('解析结果:', {
+                vodId: vodId,
+                sources: sources,
+                episodes: episodes,
+                playFrom: VOD.vod_play_from,
+                playUrl: VOD.vod_play_url
+            });
+            
+            return VOD;
+            
+        } catch(error) {
+            console.log('二级解析错误:', error);
+            console.log('错误详情:', error.message);
+            console.log('输入URL:', input);
+            
+            // 返回最小化的播放信息
+            return {
+                vod_name: '播放页面',
+                vod_play_from: '默认$$$',
+                vod_play_url: '播放$' + (input.includes('/v/') ? input.split('/v/')[1] + '/1/94' : input) + '$$$'
             };
-            const decrypted = CryptoJS.AES.decrypt(dataObj, key, {
-                mode: CryptoJS.mode.ECB,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            kurl = decrypted.toString(CryptoJS.enc.Utf8);
-        } else {
-            kurl = khtml.split('src: "')[1].split('",')[0];
         }
-        input = {
-            jx: 0,
-            parse: 0,
-            url: kurl,
-            header: rule.headers
-        };
     }),
-
-    filter: 'H4sIAAAAAAAAA+2Z308bRxDH3/1XVH7mwQba4rz1oZUqVXlpHypFUeRWbhWVulJoqyKEZLANxhBskGPi2AVSMJgE/4Agx5yx/c/c3p3/i66ZndlzUk1OCYmU6l4Qn/nur9ud3ZldLwSC4eCtT+4EFoK/xOaDt4I/zkbn5oITwXj015hE+6wrdtcl/xmd/UMa7iwE49Is0rVhsjYySwguToD1duz3n2bv/6XMt7/87qtvvv6eVLF2bCXTSlRAWrEiLagBkJatmb0KagCo2Zkz3aYC1KylvJUoKk0BacmstfwENQBqM9u0e8+wTQDSjrfEZRc1AGpz+dQubmGbAPQN1VVdTwFpK9vD0glqANRm5rFprGGbAFRvc0XkzrEeAGm5Q+eA5hqAtEZbGHXUAFAzr/adRktpCmgs9SOzv49jAdDahpPZJe0aaM726vbaKs4ZgGtt7UJXr+0ISEsN7OdV1ABQc5Y2RMVQmoLFu4sT5MbRB7Go9mJRaYkNw6MXi8PjYWkF56BTF+WeMmGJ4VHJ6jTHSiiTnv+WddkfbwNMNCv9TWnEWQGg2dypWpVTnE0A6nvvRNdTQLOyfqY1BdTmi0daU0Cj7b/UmgLSHraEcYQagG6z5W6z5a5ndi6HVE8BffvWrkh38NsBqL+XF051gP0BaG/Zt9YHcjHIYZCp10HK7u1YRVocYhpzKicriAxuOM1UolmQaO20sQSx69QRrYJI40bRTCtRHdg56eklXAxi6qX/Avo1DTqH3Cb65nTb7OIppmDM02ej8Z+1pzvNulNLePX0ck+Wx7YB6BvPD7WmwOVnWlPg8l2tKXD5rtYUuPzTVQ/A8xzMx6IPXLv98sLs9jzOwWRo8lNlu/7XZZ/W9mm3fUrbp9z2SW2fdNvD2h5220PaHiJ7OHQ9/APSwqF78k+ECoReLRAaFQjpApHxAuFIJHRP/tEFZl4tMDMqMKMLWOULawc3yEj7PDI+3z/M69m2NreFkXtttu3ulchnsAvddCVhFXHfTLrNdhJXX0+q00yJDB7F06MxBO5OBGS995SxKPKSsXCZB5fNcNkFm0FwEZ3JkLhoz2VBXMYyClf0fQq8ZEhcxsJlOqMwR/0p8JKVyJNQr5ECL9khl5ENkz3RWcaxANxwVkLm4A1nJVzu8Lb5CJdXcPkIm3O8MXviMg8uY/GjqR9N/Wg6Hk2nbyya2sYz0XuEXg5AWmXPNAz7OIEyMQ2v0dK1FZCWOhO5A11bs6fXBe6mzMRq7jZslzvigC4AADTa7LJdbuBQAbzclLm44wzyMrJjmwCofRuLzv0WV5oCT68ZzM3cyu/ap5SLAJBWemJeUd4A4N++/djixxY/tozHlqkPdVPL1qzEknX1fOw1UZs8RQnuLZJ7n2ZObfZmxt2wuFsU8y7KndrsjZW5JXJRQrqC85RCOoCOkFmrhPcYBV5uunY353odBKB6+09Fmc4eANS+iN+XbgUS/O8ldprGuajnMVYA0Cn497b1GGdagb4/rss5xJEAeLmT/ued+4ZiJxe53hxX3y1qvtvt03+59l+u/XzIz4f+7/nQZ2+RD2mze/WHiRXnH/JIANoBhYpoYPxRQAMr5WW0wh0AQPVOBk47i/UAqL/Vh3ZhD/sD8JJVsb+YM3GSzVaYrIr9xZzL1NJt0UjqnTqCj3anflCPH7l2YPFflpCCHEkiAAA='
+    
+    搜索: $js.toString(() => {
+        try {
+            let html = request(input);
+            let results = [];
+            
+            // 提取搜索结果
+            let items = pdfa(html, '.card .embed-responsive:has(a[href*="/v/"])');
+            
+            items.forEach(item => {
+                try {
+                    let link = pdfa(item, 'a[href*="/v/"]')[0];
+                    if (!link) return;
+                    
+                    let vod_id = pd(link, '&&href', input);
+                    let vod_name = pdfh(item, 'img&&alt') || pdfh(link, '&&Text');
+                    let vod_pic = pd(item, 'img&&src', input);
+                    let vod_remarks = pdfh(item, '.badge-success&&Text');
+                    
+                    // 处理vod_id
+                    if (vod_id && vod_id.includes('/v/')) {
+                        vod_id = vod_id.split('/v/')[1];
+                    }
+                    
+                    // 处理图片URL
+                    if (vod_pic && !vod_pic.startsWith('http')) {
+                        vod_pic = 'https://ptt.red' + vod_pic;
+                    }
+                    
+                    if (vod_id && vod_name) {
+                        results.push({
+                            vod_id: vod_id,
+                            vod_name: vod_name,
+                            vod_pic: vod_pic,
+                            vod_remarks: vod_remarks || ''
+                        });
+                    }
+                } catch(e) {
+                    console.log('单个搜索结果处理错误:', e);
+                }
+            });
+            
+            return results;
+            
+        } catch(error) {
+            console.log('搜索解析错误:', error);
+            return [];
+        }
+    }),
 }
