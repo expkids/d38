@@ -1,5 +1,5 @@
 var rule = {
-  title: '策驰影院',
+  title: '酷影影院',
   host: 'https://kuyingju.com',
   //https://kuyingju.com/index.php/vod/show/class/%E5%89%A7%E6%83%85/id/2/page/2.html
   //https://kuyingju.com/index.php/vod/detail/id/5797.html
